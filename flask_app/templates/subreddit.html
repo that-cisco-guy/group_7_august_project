@@ -9,7 +9,7 @@
         integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <link rel="stylesheet" href="../static/style.css" type="text/css">
 </head>
-
+<!--This page will be associated with each subreddit and display all posts from all users that were made in this particular subreddit.-->
 <body>
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
@@ -40,33 +40,53 @@
                             <li><a class="dropdown-item" href="#">Sign Out</a></li>
                         </ul>
                     </li>
+                    <!--This list tag below will be the form to create a new subreddit and should it route 
+                        to subreddit.html-->
+                    <li class="nav-item dropdown"> 
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Create Subreddit
+                        </a>
+                        <div >
+                            <form class="dropdown-menu p-4 subreddit">
+                                <div class="mb-3">
+                                    <label for="exampleFormControlInput1" class="form-label">Name</label>
+                                    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Name of subreddit">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="exampleFormControlTextarea1" class="form-label">Description</label>
+                                    <textarea class="form-control" id="exampleFormControlTextarea1" placeholder="Description of subreddit"
+                                        rows="5"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                        </div>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
-    <div class="header">
-        <h1>Reddit-Like Page</h1>
+    <div class="subreddit-header">
+        <h2>{{ subreddit.subreddit_name }}</h2>
+        <h4>{{ subreddit.subreddit_description }}</h4>
     </div>
     <div class="container mt-3">
         <div class="row justify-content-center">
             <div class="col-md-6" style="margin-top: 15px;">
-                {% for post in posts %}
+                <!-- ------------------------------------------------------------------------------ -->
+                <!--Get all posts were by subreddit_id-->
+                <!-- ------------------------------------------------------------------------------ -->
+                {% for post in subreddit_posts %}
                 <a class="view" href=""> <!--This hyperlink will route to a page to allow users to view each post -->
                     <div class="main-content">
                         <h3>{{ post.title }}</h3>
                         <p>{{ post.content }}</p>
                     </div>
                 </a>
-                <a class="view" href=""> <!--This hyperlink will route to a page to allow users to view each post -->
-                    <div class="main-content">
-                        <h3>Post Title</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero.
-                            Sed cursus ante dapibus diam. Sed nisi.</p>
-                    </div>
-                </a>
                 {% endfor %}
             </div>
-            <div class="col-md-3 d-none d-md-block">
+            <div class="col-md-3 d-none d-md-block"> <!--This is some extra side content, 
+                can you give me some ideas on what would be nice to fill here?-->
                 <div class="sidebar">
                     <div class="accordion accordion-flush" id="accordionFlushExample">
                         <div class="accordion-item">

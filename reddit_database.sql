@@ -15,19 +15,6 @@ CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
 USE `mydb` ;
 
 -- -----------------------------------------------------
--- Table `mydb`.`users`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`users` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `username` VARCHAR(25) NULL,
-  `email` VARCHAR(45) NULL,
-  `created_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `mydb`.`subreddits`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`subreddits` (
@@ -42,6 +29,26 @@ CREATE TABLE IF NOT EXISTS `mydb`.`subreddits` (
   CONSTRAINT `fk_subreddits_users1`
     FOREIGN KEY (`users_id`)
     REFERENCES `mydb`.`users` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`users`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`users` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(25) NULL,
+  `email` VARCHAR(45) NULL,
+  `created_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+  `subreddits_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_users_subreddits1_idx` (`subreddits_id` ASC) VISIBLE,
+  CONSTRAINT `fk_users_subreddits1`
+    FOREIGN KEY (`subreddits_id`)
+    REFERENCES `mydb`.`subreddits` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
