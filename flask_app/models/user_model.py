@@ -55,14 +55,14 @@ class User:
         return cls(result[0])
     
     @classmethod
-    def get_subscribed_subreddits(self):
+    def get_subscribed_subreddits(cls, user_id):
         query = """
             SELECT s.*
             FROM subreddits s
             WHERE s.users_id = %(user_id)s;
         """
-        data = {'user_id': self.id}
-        results = connectToMySQL(User.DB).query_db(query, data)
+        data = {'user_id': user_id}
+        results = connectToMySQL(cls.DB).query_db(query, data)
         subscribed_subreddits = [Subreddit(result) for result in results]
         return subscribed_subreddits
     

@@ -69,23 +69,27 @@
     <hr>
     <div class="container-sm create-post">
         <h4>Create Post</h3>
-        <form>
-            <div class="mb-3">
-                <!--Create search bar to search for a subreddit by name-->
-                <!--This search bar will be used to find subreddits in real time so a user
-                    can select a subreddit and that subreddit can be associated with the created post.-->
-            </div>
-            <div class="mb-3">
-                <label for="exampleFormControlInput1" class="form-label">Title</label>
-                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="title">
-            </div>
-            <div class="mb-3">
-                <label for="exampleFormControlTextarea1" class="form-label">Content</label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" placeholder="Content"
-                    rows="5"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+            <form action="/new" method="post">
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Title</label>
+                    <input type="text" class="form-control" id="exampleFormControlInput1" name="title" placeholder="title">
+                </div>
+                <div class="mb-3">
+                    <label for="exampleFormControlTextarea1" class="form-label">Content</label>
+                    <textarea class="form-control" id="exampleFormControlTextarea1" name="body" placeholder="Content" rows="5"></textarea>
+                </div>
+                <!-- Add a select input for subreddit selection -->
+                <div class="mb-3">
+                    <label for="subredditSelect" class="form-label">Select Subreddit</label>
+                    <select class="form-control" id="subredditSelect" name="subreddit_name">
+                        {% for subreddit in subscribed_subreddits %}
+                            <option value="{{ subreddit.subreddit_name }}">{{ subreddit.subreddit_name }}</option>
+                        {% endfor %}
+                    </select>
+                    
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"

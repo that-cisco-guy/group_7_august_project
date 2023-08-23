@@ -1,6 +1,6 @@
 from flask import session
 from flask_app import connectToMySQL
-from flask_app.models.user_model import User
+
 
 class Post:
     DB = 'reddit_database'
