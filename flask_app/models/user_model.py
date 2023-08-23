@@ -63,7 +63,10 @@ class User:
         """
         data = {'user_id': user_id}
         results = connectToMySQL(cls.DB).query_db(query, data)
-        subscribed_subreddits = [Subreddit(result) for result in results]
+        
+        # Initialize Subreddit instances with the correct arguments
+        subscribed_subreddits = [Subreddit(result['id'], result['subreddit_name'], result['description']) for result in results]
+        
         return subscribed_subreddits
     
     @staticmethod

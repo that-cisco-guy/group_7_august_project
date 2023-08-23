@@ -20,7 +20,6 @@ class Subreddit:
         return result[0][''] if result else None
     
     
-    @classmethod
     def get_posts(self):
         query = """
             SELECT p.*
@@ -29,8 +28,13 @@ class Subreddit:
         """
         data = {'subreddit_id': self.id}
         results = connectToMySQL(Subreddit.DB).query_db(query, data)
-        posts = [Post(result) for result in results]
+        posts = [Post(result['id'], result['subreddits_id'], {
+            'title': result['title'],
+            'body': result['post_body'],
+            'user_id': result['users_id']
+        }) for result in results]
         return posts
+
     
     @classmethod
     def get_subscribed_subreddits(cls, user_id):
