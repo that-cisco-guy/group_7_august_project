@@ -1,12 +1,12 @@
 # Group 7 Project proposal
 
-## Group Memebers
+## Group Members
 
-- Jerry Anderson
-- Logan Gaertner
-- Astero Jorgo
-- Adam Brandon
-- Ye Zheng
+- Jerry Anderson - Backend
+- Logan Gaertner - Backend
+- Astero Jorgo - Frontend
+- Adam Brandon - Frontend
+- Ye Zheng - Frontend
 
 ## Overview
 
