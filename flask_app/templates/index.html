@@ -48,17 +48,16 @@
                             Create Subreddit
                         </a>
                         <div >
-                            <form class="dropdown-menu p-4 subreddit">
-                                <div class="mb-3">
-                                    <label for="exampleFormControlInput1" class="form-label">Name</label>
-                                    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Name of subreddit">
+                            <form class="dropdown-menu p-4 subreddit" method="POST" action="/new_subreddit">
+                                <div class="form-group">
+                                    <label for="subreddit_name">Subreddit Name</label>
+                                    <input type="text" class="form-control" id="subreddit_name" name="subreddit_name" required>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="exampleFormControlTextarea1" class="form-label">Description</label>
-                                    <textarea class="form-control" id="exampleFormControlTextarea1" placeholder="Description of subreddit"
-                                        rows="5"></textarea>
+                                <div class="form-group">
+                                    <label for="description">Description</label>
+                                    <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
                                 </div>
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <button type="submit" class="btn btn-primary">Create Subreddit</button>
                             </form>
                         </div>
                     </li>

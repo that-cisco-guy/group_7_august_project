@@ -69,4 +69,16 @@ class Subreddit:
         }
         new_subreddit_id = connectToMySQL(cls.DB).query_db(query, data)
         return new_subreddit_id
+    
+    @staticmethod
+    def validate_new_subreddit(subreddit_name, description):
+        errors = []
+
+        if len(subreddit_name) < 3:
+            errors.append("Subreddit name must be at least 3 characters long.")
+        if len(description) < 10:
+            errors.append("Description must be at least 10 characters long.")
+
+        return errors
+
 
