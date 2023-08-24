@@ -72,15 +72,19 @@
     <div class="container mt-3">
         <div class="row justify-content-center">
             <div class="col-md-6" style="margin-top: 15px;">
-                    <div class="main-content">
-                        <h3>{{ post.title }}</h3>
-                        <p>{{ post.content }}</p>
-                    </div>
-                <div class="mb-3">
-                    <label for="exampleFormControlTextarea1" class="form-label">Comment</label>
-                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="2"></textarea>
-                    <button style="margin-top: 5px;" type="submit" class="btn btn-sm btn-primary">Submit</button>
+                <div class="main-content">
+                    <h3>{{ post.title }}</h3>
+                    <p>{{ post.body }}</p>
                 </div>
+                <div class="mb-3">
+                    <form method="POST" action="{{ url_for('view_post', post_id=post.id) }}">
+                        <label for="comment" class="form-label">Comment</label>
+                        <textarea class="form-control" id="comment" name="comment" rows="2"></textarea>
+                        <button style="margin-top: 5px;" type="submit" class="btn btn-sm btn-primary">Submit</button>
+                    </form>
+                </div>
+                
+                    
                 <div class="main-content">
                     {% for comment in comments %}
                     <h5>{{ comment.user }}</h5>
