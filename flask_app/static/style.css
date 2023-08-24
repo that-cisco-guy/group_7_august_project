@@ -50,3 +50,11 @@ body {
     text-decoration: none;
     color: #323232;
 }
+
+.post-container {
+    transition: transform 0.2s; /* Add a smooth transition effect */
+}
+
+.post-container:hover {
+    transform: scale(1.05); /* Enlarge the div slightly on hover */
+}

@@ -14,11 +14,11 @@ class Comment:
     def create_new_comment(cls, form_data, post_id):
         new_form_data = {
             'user_id': session['user_id'],
-            'content': form_data['content'],
+            'content': form_data['comment'],
             'post_id': post_id
         }
         query = """
-            INSERT INTO comments (content, users_id, posts_id)
+            INSERT INTO comments (comment_body, users_id, posts_id)
             VALUES (%(content)s, %(user_id)s, %(post_id)s)
         """
         connectToMySQL(cls.DB).query_db(query, new_form_data)
@@ -31,15 +31,17 @@ class Comment:
             JOIN users u ON c.users_id = u.id
             WHERE c.posts_id = %(post_id)s;
         """
+
         data = {'post_id': post_id}
         results = connectToMySQL(cls.DB).query_db(query, data)
         
         comments = [cls(result['id'], result['posts_id'], {
-            'body': result['content'],
+            'body': result['comment_body'],
             'user_id': result['users_id']
         }) for result in results]
         
         return comments
+    
     
     @classmethod
     def delete_comments_by_post_id(cls, post_id):

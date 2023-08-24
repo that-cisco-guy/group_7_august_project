@@ -18,8 +18,8 @@ def homepage():
             posts.extend(subreddit_posts)
 
         return render_template('index.html', user=user, posts=posts)
-
-    return render_template('index.html') 
+    
+    return render_template('index.html')
 
 
 @app.route('/new', methods=['GET', 'POST'])
@@ -88,13 +88,83 @@ def create_subreddit():
             else:
                 flash("Failed to create new subreddit.", 'create_subreddit_fail')
         
-        return render_template('create_subreddit.html', user=user)
+        return render_template('/', user=user)
     
     flash("You must be logged in to create a subreddit.", 'create_subreddit')
     return redirect('/login')
 
-@app.route('/post/<int:post_id>')
+@app.route('/post/<int:post_id>', methods=['GET', 'POST'])
 def view_post(post_id):
+    
+
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect('/login')
     post = Post.get_post_by_id(post_id)
-    comments = Comment.get_comments_by_post_id(post_id)  # Updated method name
+    comments = Comment.get_comments_by_post_id(post_id)
+
+    if request.method == 'POST':
+        if 'user_id' in session:
+            user_id = session['user_id']
+            form_data = {
+                'comment': request.form.get('comment'),  
+                'user_id': user_id,
+            }
+            Comment.create_new_comment(form_data, post_id)
+            flash("Comment added successfully!", 'add_comment')
+        else:
+            flash("You must be logged in to leave a comment.", 'add_comment')
+        
+        return redirect(f'/post/{post_id}')
+
     return render_template('view_post.html', post=post, comments=comments)
+
+
+@app.route('/post/delete/<int:post_id>', methods=['POST'])
+def delete_post(post_id):
+    if request.method == 'POST':
+        post_id = request.form.get('post_id')
+        Post.delete_post(post_id)
+        return redirect('/')  # Redirect to the home page after successful deletion
+    else:
+        flash("Invalid request method.", "error")
+        return redirect('/')
+
+
+@app.route('/post/update/<int:post_id>')
+def update_page(post_id):
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect('/login')
+
+    post = Post.get_post_by_id(post_id)
+    
+    # Fetch the subreddit name associated with the post
+    subscribed_subreddits = Subreddit.get_subscribed_subreddits(user_id)
+
+    return render_template('update_post.html', post=post, subscribed_subreddits=subscribed_subreddits)
+
+
+@app.route('/post/update/<int:post_id>', methods=['POST'])
+def update_post(post_id):
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect('/login')
+
+    form_data = {
+        'title': request.form.get('title'),
+        'body': request.form.get('body'),
+        'post_id': post_id
+    }
+
+    errors = Post.validate_new_post(form_data['title'], form_data['body'])
+
+    if errors:
+        post = Post.get_post_by_id(post_id)
+        return render_template('update_post.html', post=post, errors=errors)
+
+    Post.update_post(form_data)
+    flash("Post updated successfully!", 'update_post')
+    return redirect(f'/post/{post_id}')
+
+

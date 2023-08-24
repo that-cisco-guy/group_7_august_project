@@ -12,6 +12,7 @@ class Post:
         self.body = form_data['body']
         self.users_id = form_data['user_id']
 
+
     @classmethod
     def create_new_post(cls, form_data, subreddit_name):
         query = """
@@ -74,7 +75,7 @@ class Post:
         query = """
             UPDATE posts
             SET title = %(title)s, post_body = %(body)s
-            WHERE id = %(post_id)s
+            WHERE posts.id = %(post_id)s
         """
         data = {
             'title': form_data['title'],
@@ -85,9 +86,10 @@ class Post:
     
     @classmethod
     def delete_post(cls, post_id):
-        query = "DELETE FROM posts WHERE id = %(post_id)s;"
+        query = "DELETE FROM posts WHERE posts.id = %(post_id)s;"
         data = {'post_id': post_id}
         connectToMySQL(cls.DB).query_db(query, data)
+
 
     @staticmethod
     def validate_new_post(title, body):
