@@ -87,8 +87,8 @@
                     
                 <div class="main-content">
                     {% for comment in comments %}
-                    <h5>{{ comment.user }}</h5>
-                    <p>{{ comment.content }}</p>
+                    <h5>{{ comment.username }}</h5>
+                    <p>{{ comment.body }}</p>
                     {% endfor %}
                     <br>
                 </div>
