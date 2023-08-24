@@ -11,13 +11,15 @@
 </head>
 
 <body>
-  {% with messages = get_flashed_messages() %}
+  <div class="text-center">
+    {% with messages = get_flashed_messages() %}
                 {% if messages %}
                     {% for message in messages %}
                         <p> {{message}}</p>
                     {% endfor %}
                 {% endif %}
             {% endwith%}
+  </div>
   <div class="container text-center login">
     <div class="row justify-content-evenly">
       <div class="col-md-4">

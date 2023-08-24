@@ -11,6 +11,7 @@
 </head>
 <!--This page should display all of the posts from the subreddits that the user follows.-->
 <body>
+    
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">Reddit-Like Page</a>
@@ -30,17 +31,20 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/new">Create Post</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Sign Out</a>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
-                            Other
+                            Subreddits
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#">Profile</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="/logout">Sign Out</a></li>
+                            <li><a class="dropdown-item" href="#">Sign Out</a></li>
                         </ul>
                     </li>
                     <!--This list tag below will be the form to create a new subreddit and should it route 
@@ -50,15 +54,22 @@
                             aria-expanded="false">
                             Create Subreddit
                         </a>
-                        <div >
+                        <div>
                             <form class="dropdown-menu p-4 subreddit" method="POST" action="/new_subreddit">
                                 <div class="form-group">
                                     <label for="subreddit_name">Subreddit Name</label>
-                                    <input type="text" class="form-control" id="subreddit_name" name="subreddit_name" required>
+                                    <input required type="text" class="form-control" id="subreddit_name" name="subreddit_name" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="description">Description</label>
                                     <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+                                    {% with messages = get_flashed_messages() %}
+                                {% if messages %}
+                                {% for message in messages %}
+                                    <p> {{message}}</p>
+                                {% endfor %}
+                                {% endif %}
+                                {% endwith%}
                                 </div>
                                 <button type="submit" class="btn btn-primary">Create Subreddit</button>
                             </form>

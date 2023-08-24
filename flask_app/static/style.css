@@ -58,3 +58,7 @@ body {
 .post-container:hover {
     transform: scale(1.05); /* Enlarge the div slightly on hover */
 }
+
+.subreddit {
+    width: 300px;
+}

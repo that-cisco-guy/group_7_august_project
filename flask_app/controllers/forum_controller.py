@@ -39,7 +39,7 @@ def create_post():
             if errors:
                 for error in errors:
                     flash(error, 'create_post')
-                return redirect('/create_post')
+                return redirect('/new')
             
             # Create the new post
             form_data = {
@@ -50,7 +50,6 @@ def create_post():
             new_post_id = Post.create_new_post(form_data, subreddit_name)
             
             if new_post_id:
-                flash("New post created successfully!", 'create_post_success')
                 return redirect('/')
             else:
                 flash("Subreddit not found. Post creation failed.", 'create_post_fail')
@@ -77,16 +76,15 @@ def create_subreddit():
             if errors:
                 for error in errors:
                     flash(error, 'create_subreddit')
-                return redirect('/new_subreddit')
+                return redirect('/')
             
             # Create the new subreddit
             new_subreddit_id = Subreddit.create_new_subreddit(subreddit_name, description, user_id)
             
             if new_subreddit_id:
-                flash("New subreddit created successfully!", 'create_subreddit_success')
                 return redirect('/')
             else:
-                flash("Failed to create new subreddit.", 'create_subreddit_fail')
+                flash(error, 'create_subreddit_fail')
         
         return render_template('/', user=user)
     
@@ -111,7 +109,6 @@ def view_post(post_id):
                 'user_id': user_id,
             }
             Comment.create_new_comment(form_data, post_id)
-            flash("Comment added successfully!", 'add_comment')
         else:
             flash("You must be logged in to leave a comment.", 'add_comment')
         
@@ -124,9 +121,12 @@ def view_post(post_id):
 def delete_post(post_id):
     if request.method == 'POST':
         post_id = request.form.get('post_id')
+        Comment.delete_comments_by_post_id(post_id)
         Post.delete_post(post_id)
+        print(f'deleted post {post_id}')
         return redirect('/')  # Redirect to the home page after successful deletion
     else:
+        print('invalid request')
         flash("Invalid request method.", "error")
         return redirect('/')
 
@@ -157,14 +157,17 @@ def update_post(post_id):
         'post_id': post_id
     }
 
+    subscribed_subreddits = Subreddit.get_subscribed_subreddits(user_id)
     errors = Post.validate_new_post(form_data['title'], form_data['body'])
+    
 
     if errors:
         post = Post.get_post_by_id(post_id)
-        return render_template('update_post.html', post=post, errors=errors)
+        for error in errors:
+            flash(error, 'update_post')
+        return render_template('update_post.html', post=post, errors=errors, subscribed_subreddits=subscribed_subreddits)
 
     Post.update_post(form_data)
-    flash("Post updated successfully!", 'update_post')
     return redirect(f'/post/{post_id}')
 
 
