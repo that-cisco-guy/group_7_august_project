@@ -5,128 +5,128 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
--- Schema mydb
+-- Schema reddit_database
 -- -----------------------------------------------------
 
 -- -----------------------------------------------------
--- Schema mydb
+-- Schema reddit_database
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
-USE `mydb` ;
+CREATE SCHEMA IF NOT EXISTS `reddit_database` DEFAULT CHARACTER SET utf8 ;
+USE `reddit_database` ;
 
 -- -----------------------------------------------------
--- Table `mydb`.`subreddits`
+-- Table `reddit_database`.`subreddits`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`subreddits` (
+CREATE TABLE IF NOT EXISTS `reddit_database`.`subreddits` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `subreddit_name` VARCHAR(25) NULL,
   `description` VARCHAR(255) NULL,
-  `created_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at` DATETIME NULL,
+  `updated_at` DATETIME NULL,
   `users_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_subreddits_users1_idx` (`users_id` ASC) VISIBLE,
   CONSTRAINT `fk_subreddits_users1`
     FOREIGN KEY (`users_id`)
-    REFERENCES `mydb`.`users` (`id`)
+    REFERENCES `reddit_database`.`users` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`users`
+-- Table `reddit_database`.`users`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`users` (
+CREATE TABLE IF NOT EXISTS `reddit_database`.`users` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(25) NULL,
-  `email` VARCHAR(45) NULL,
-  `created_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+  `email` VARCHAR(255) NULL,
+  `password` VARCHAR(256) NULL,
+  `created_at` DATETIME NULL,
+  `updated_at` DATETIME NULL,
   `subreddits_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_users_subreddits1_idx` (`subreddits_id` ASC) VISIBLE,
   CONSTRAINT `fk_users_subreddits1`
     FOREIGN KEY (`subreddits_id`)
-    REFERENCES `mydb`.`subreddits` (`id`)
+    REFERENCES `reddit_database`.`subreddits` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`posts`
+-- Table `reddit_database`.`posts`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`posts` (
+CREATE TABLE IF NOT EXISTS `reddit_database`.`posts` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(100) NULL,
   `post_body` VARCHAR(8000) NULL,
-  `created_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
-  `users_id` INT NOT NULL,
+  `created_at` DATETIME NULL,
+  `updated_at` DATETIME NULL,
   `subreddits_id` INT NOT NULL,
+  `users_id` INT NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_posts_users_idx` (`users_id` ASC) VISIBLE,
   INDEX `fk_posts_subreddits1_idx` (`subreddits_id` ASC) VISIBLE,
-  CONSTRAINT `fk_posts_users`
-    FOREIGN KEY (`users_id`)
-    REFERENCES `mydb`.`users` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+  INDEX `fk_posts_users1_idx` (`users_id` ASC) VISIBLE,
   CONSTRAINT `fk_posts_subreddits1`
     FOREIGN KEY (`subreddits_id`)
-    REFERENCES `mydb`.`subreddits` (`id`)
+    REFERENCES `reddit_database`.`subreddits` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_posts_users1`
+    FOREIGN KEY (`users_id`)
+    REFERENCES `reddit_database`.`users` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`comments`
+-- Table `reddit_database`.`comments`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`comments` (
+CREATE TABLE IF NOT EXISTS `reddit_database`.`comments` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `comment_body` VARCHAR(8000) NULL,
-  `created_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
-  `posts_id` INT NOT NULL,
+  `created_at` DATETIME NULL,
+  `updated_at` DATETIME NULL,
   `users_id` INT NOT NULL,
+  `posts_id` INT NOT NULL,
   PRIMARY KEY (`id`),
+  INDEX `fk_comments_users_idx` (`users_id` ASC) VISIBLE,
   INDEX `fk_comments_posts1_idx` (`posts_id` ASC) VISIBLE,
-  INDEX `fk_comments_users1_idx` (`users_id` ASC) VISIBLE,
-  CONSTRAINT `fk_comments_posts1`
-    FOREIGN KEY (`posts_id`)
-    REFERENCES `mydb`.`posts` (`id`)
+  CONSTRAINT `fk_comments_users`
+    FOREIGN KEY (`users_id`)
+    REFERENCES `reddit_database`.`users` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_comments_users1`
-    FOREIGN KEY (`users_id`)
-    REFERENCES `mydb`.`users` (`id`)
+  CONSTRAINT `fk_comments_posts1`
+    FOREIGN KEY (`posts_id`)
+    REFERENCES `reddit_database`.`posts` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`post_votes`
+-- Table `reddit_database`.`post_votes`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`post_votes` (
-  `id` INT NOT NULL,
+CREATE TABLE IF NOT EXISTS `reddit_database`.`post_votes` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `vote_type` TINYINT NULL,
   `posts_id` INT NOT NULL,
   `users_id` INT NOT NULL,
-  `vote_type` TINYINT NULL,
-  `created_at` DATETIME NULL DEFAULT current_timestamp,
   PRIMARY KEY (`id`),
-  INDEX `fk_reactions_posts1_idx` (`posts_id` ASC) VISIBLE,
-  INDEX `fk_reactions_users1_idx` (`users_id` ASC) VISIBLE,
-  CONSTRAINT `fk_reactions_posts1`
+  INDEX `fk_post_votes_posts1_idx` (`posts_id` ASC) VISIBLE,
+  INDEX `fk_post_votes_users1_idx` (`users_id` ASC) VISIBLE,
+  CONSTRAINT `fk_post_votes_posts1`
     FOREIGN KEY (`posts_id`)
-    REFERENCES `mydb`.`posts` (`id`)
+    REFERENCES `reddit_database`.`posts` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_reactions_users1`
+  CONSTRAINT `fk_post_votes_users1`
     FOREIGN KEY (`users_id`)
-    REFERENCES `mydb`.`users` (`id`)
+    REFERENCES `reddit_database`.`users` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
