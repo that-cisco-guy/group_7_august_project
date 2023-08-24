@@ -46,10 +46,8 @@ class User:
         results = connectToMySQL(cls.DB).query_db(query, data)
         if results:
             return cls(results[0])
-        else:
-            # Handle the case where there's no matching user
+        else: 
             return None
-    
     
     @classmethod
     def get_one_by_email(cls,data):
