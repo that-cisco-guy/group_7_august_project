@@ -76,19 +76,12 @@
                 <!-- ------------------------------------------------------------------------------ -->
 
                 {% for post in posts %}
-                <a class="view" href=""> <!--This hyperlink will route to a page to allow users to view each post -->
+                <a class="view" href="{{ url_for('view_post', post_id=post.id) }}">
                     <div class="main-content">
                         <h3>{{ post.title }}</h3>
                         <p>{{ post.content }}</p>
                     </div>
-                </a>
-                <a class="view" href=""> <!--This hyperlink will route to a page to allow users to view each post -->
-                    <div class="main-content">
-                        <h3>Post Title</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero.
-                            Sed cursus ante dapibus diam. Sed nisi.</p>
-                    </div>
-                </a>
+                </a>                
                 {% endfor %}
             </div>
             <div class="col-md-3 d-none d-md-block">

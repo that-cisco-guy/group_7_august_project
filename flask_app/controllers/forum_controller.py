@@ -3,6 +3,7 @@ from flask import render_template, redirect, request, session, flash, url_for
 from flask_app.models.user_model import User
 from flask_app.models.post_model import Post
 from flask_app.models.subreddit_model import Subreddit
+from flask_app.models.comment_model import Comment
 
 @app.route('/')
 def homepage():
@@ -91,3 +92,9 @@ def create_subreddit():
     
     flash("You must be logged in to create a subreddit.", 'create_subreddit')
     return redirect('/login')
+
+@app.route('/post/<int:post_id>')
+def view_post(post_id):
+    post = Post.get_post_by_id(post_id)
+    comments = Comment.get_comments_by_post_id(post_id)  # Updated method name
+    return render_template('view_post.html', post=post, comments=comments)
