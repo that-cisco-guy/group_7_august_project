@@ -93,8 +93,23 @@ def create_subreddit():
     flash("You must be logged in to create a subreddit.", 'create_subreddit')
     return redirect('/login')
 
-@app.route('/post/<int:post_id>')
+@app.route('/post/<int:post_id>', methods=['GET', 'POST'])
 def view_post(post_id):
     post = Post.get_post_by_id(post_id)
-    comments = Comment.get_comments_by_post_id(post_id)  # Updated method name
+    comments = Comment.get_comments_by_post_id(post_id)
+
+    if request.method == 'POST':
+        if 'user_id' in session:
+            user_id = session['user_id']
+            form_data = {
+                'comment': request.form.get('comment'),  
+                'user_id': user_id,
+            }
+            Comment.create_new_comment(form_data, post_id)
+            flash("Comment added successfully!", 'add_comment')
+        else:
+            flash("You must be logged in to leave a comment.", 'add_comment')
+        
+        return redirect(f'/post/{post_id}')
+
     return render_template('view_post.html', post=post, comments=comments)
