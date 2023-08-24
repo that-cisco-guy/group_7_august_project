@@ -44,7 +44,12 @@ class User:
         query  = "SELECT * FROM users WHERE id = %(id)s";
         data = {'id':user_id}
         results = connectToMySQL(cls.DB).query_db(query, data)
-        return cls(results[0])
+        if results:
+            return cls(results[0])
+        else:
+            # Handle the case where there's no matching user
+            return None
+    
     
     @classmethod
     def get_one_by_email(cls,data):
