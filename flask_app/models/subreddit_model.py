@@ -70,6 +70,19 @@ class Subreddit:
         new_subreddit_id = connectToMySQL(cls.DB).query_db(query, data)
         return new_subreddit_id
     
+    @classmethod
+    def get_subreddit_by_id(cls, subreddit_id):
+        query = "SELECT * FROM subreddits WHERE id = %(subreddit_id)s;"
+        data = {'subreddit_id': subreddit_id}
+        result = connectToMySQL(cls.DB).query_db(query, data)
+        
+        if result:
+            subreddit_data = result[0]
+            subreddit = cls(subreddit_data['id'], subreddit_data['subreddit_name'], subreddit_data['description'])
+            return subreddit
+        else:
+            return None
+    
     @staticmethod
     def validate_new_subreddit(subreddit_name, description):
         errors = []
