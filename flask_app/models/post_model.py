@@ -1,6 +1,5 @@
-from flask import session, redirect
+from flask import session
 from flask_app import connectToMySQL
-from flask_app.models.user_model import User
 
 
 class Post:
@@ -14,13 +13,13 @@ class Post:
         self.users_id = form_data['user_id']
 
     @classmethod
-    def create_new_post(cls, form_data, subreddits):
+    def create_new_post(cls, form_data, subreddit_name):
         query = """
-            SELECT subreddits.id
+            SELECT id
             FROM subreddits
-            WHERE subreddits.subreddit_name = %(subreddit_name)s;
+            WHERE subreddit_name = %(subreddit_name)s;
         """
-        result = connectToMySQL(cls.DB).query_db(query, {'subreddit_name': subreddits})
+        result = connectToMySQL(cls.DB).query_db(query, {'subreddit_name': subreddit_name})
         
         if result:
             subreddit_id = result[0]['id'] 
@@ -40,18 +39,12 @@ class Post:
         else:
             return None
 
-        
     @classmethod
-    def get_threads_by_subreddit(cls, subreddits_id):
-        db = cls.DB
-        connection = connectToMySQL(db)
-        
-        query = "SELECT * FROM posts WHERE subreddits_id = %(subreddits_id)s;"
-        data = {'subreddits_id': subreddits_id}
-        
-        threads = connection.query_db(query, data)
-        
-        return threads
+    def get_threads_by_subreddit(cls, subreddit_id):
+        query = "SELECT * FROM posts WHERE subreddits_id = %(subreddit_id)s;"
+        data = {'subreddit_id': subreddit_id}
+        threads = connectToMySQL(cls.DB).query_db(query, data)
+        return [cls(**thread) for thread in threads]
     
     @classmethod
     def get_post_by_id(cls, post_id):
@@ -66,9 +59,9 @@ class Post:
         
         if result:
             post_data = result[0]
-            post = cls(post_data['id'], post_data['subcategories_id'], {
+            post = cls(post_data['id'], post_data['subreddits_id'], {
                 'title': post_data['title'],
-                'body': post_data['body'],
+                'body': post_data['post_body'],
                 'user_id': post_data['users_id']
             })
             post.username = post_data['username']  # Add username as an attribute
@@ -80,7 +73,7 @@ class Post:
     def update_post(cls, form_data):
         query = """
             UPDATE posts
-            SET title = %(title)s, body = %(body)s
+            SET title = %(title)s, post_body = %(body)s
             WHERE id = %(post_id)s
         """
         data = {
@@ -90,14 +83,12 @@ class Post:
         }
         return connectToMySQL(cls.DB).query_db(query, data)
     
-
     @classmethod
     def delete_post(cls, post_id):
-        connection = connectToMySQL(cls.DB)
         query = "DELETE FROM posts WHERE id = %(post_id)s;"
         data = {'post_id': post_id}
-        connection.query_db(query, data)
-        
+        connectToMySQL(cls.DB).query_db(query, data)
+
     @staticmethod
     def validate_new_post(title, body):
         errors = []

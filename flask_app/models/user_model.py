@@ -1,6 +1,7 @@
 from flask_app.config.mysqlconnection import connectToMySQL
 from flask import flash
 import re
+from flask_app.models.subreddit_model import Subreddit
 
 
 
@@ -52,6 +53,21 @@ class User:
         if len(result) < 1:
             return None
         return cls(result[0])
+    
+    @classmethod
+    def get_subscribed_subreddits(cls, user_id):
+        query = """
+            SELECT s.*
+            FROM subreddits s
+            WHERE s.users_id = %(user_id)s;
+        """
+        data = {'user_id': user_id}
+        results = connectToMySQL(cls.DB).query_db(query, data)
+        
+        # Initialize Subreddit instances with the correct arguments
+        subscribed_subreddits = [Subreddit(result['id'], result['subreddit_name'], result['description']) for result in results]
+        
+        return subscribed_subreddits
     
     @staticmethod
     def new_user_validation(data):
